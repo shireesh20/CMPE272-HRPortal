@@ -1,0 +1,76 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Operations Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../static/hr-dashboard-style.css">
+</head>
+<body>
+
+<div id="preloader" class="preloader"></div>
+
+<header class="main-header">
+    <h1>HR Operations Panel</h1>
+</header>
+
+<div class="background-cover" id="backgroundCover"></div>
+
+<nav class="top-nav">
+    <a href="{{ url_for('employees') }}">Employees</a>
+    <a href="{{ url_for('departments') }}">Departments</a>
+    <a href="" id="verificationNav">Notifications <span id="verificationBadge"></span></a>
+    <a href="{{ url_for('logout') }}" id="exitButton">SignOut</a>
+</nav>
+
+<main class="dashboard-main">
+    <section class="intro-section">
+        <h2>Greetings, {{ first_name }}</h2>
+    </section>
+
+    <div class="visual" id="sectorBarChartContainer">
+        <h3>Employees Distribution</h3>
+        <div class="canvas-container">
+            <canvas id="sectorBarChart"></canvas>
+        </div>
+    </div>
+    
+    <div class="visual" id="wagePieChartContainer">
+        <h3>Salary Ranges</h3>
+        <div class="canvas-container">
+            <canvas id="wagePieChart"></canvas>
+        </div>
+    </div>
+    
+</main>
+
+<aside class="sidebar" id="sidebar">
+    <header class="sidebar-header">
+        <h2>Awaiting Approvals</h2>
+        <button class="close-sidebar" id="closeSidebar">✖</button>
+    </header>
+    <div class="sidebar-content" id="sidebarContent">
+        <!-- List of Endorsements will go here -->
+    </div>
+</aside>
+
+<div class="overlay-dialog" id="overlayDialog">
+    <div class="dialog-body">
+        <button class="dialog-close" id="closeDialogButton">✖</button>
+        <h2>Details for Endorsement</h2>
+        <div class="dialog-info" id="dialogInfo">
+            <!-- Endorsement Details will be inserted dynamically -->
+        </div>
+        <footer class="dialog-footer">
+            <button class="button-approve" id="confirmButton">Confirm</button>
+            <button class="button-reject" id="rejectButton">Reject</button>
+        </footer>
+    </div>
+</div>
+
+<script src="../static/js/dashboard-script.js"></script>
+
+</body>
+</html>
+

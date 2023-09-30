@@ -1,0 +1,16 @@
+{
+  "name": "cmpe-272-hrm",
+  "version": "1.0.0",
+  "description": "hr application portal",
+  "main": "main.py",
+  "scripts": {
+    "test": "python3 main.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shireesh20/CMPE272-HRPortal.git"
+  },
+  "author": "team-sankalp",
+  "license": "ISC",
+  "homepage": "https://github.com/shireesh20/CMPE272-HRPortal#readme"
+}

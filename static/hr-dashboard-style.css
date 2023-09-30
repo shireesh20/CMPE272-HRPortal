@@ -1,0 +1,206 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7fa;
+    color: #333;
+}
+
+.preloader {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.main-header {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.top-nav {
+    background-color: #34495e;
+    display: flex; /* Changed from overflow: hidden */
+    justify-content: start; /* Align items to the start */
+    align-items: center; /* Center items vertically */
+    padding: 0 16px; /* Add some padding on the sides */
+}
+
+/* SignOut button alignment */
+.top-nav #exitButton {
+    margin-left: auto; /* Pushes the button to the right */
+}
+
+.top-nav a {
+    float: left;
+    display: block;
+    color: #ecf0f1;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.top-nav a:hover {
+    background-color: #2980b9;
+}
+
+
+
+/* Center the greeting text */
+.dashboard-main .intro-section h2 {
+    text-align: center; /* Centers the text horizontally */
+}
+
+
+.sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background: #ecf0f1;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.overlay-dialog {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-body {
+    background: #fff;
+    padding: 20px;
+    width: 400px;
+    margin: 0 auto;
+}
+
+.dialog-footer {
+    text-align: right;
+}
+
+.button-approve, .button-reject {
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-approve {
+    background-color: #2ecc71;
+    color: #fff;
+}
+
+.button-reject {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.dialog-close, .close-sidebar {
+    float: right;
+    cursor: pointer;
+}
+
+
+.dashboard-main {
+    display: flex;
+    justify-content: center; /* Center children horizontally */
+    align-items: flex-start; /* Align children to the top */
+    flex-wrap: wrap; /* Allow items to wrap */
+    padding: 20px;
+}
+
+.intro-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px; /* Add space below the greeting */
+}
+
+.intro-section h2 {
+    text-align: center; /* Center the text */
+    width: 100%; /* Ensure the container takes full width */
+    margin: auto; /* Center the container */
+}
+
+/* Center the charts container */
+.data-visuals {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to the top */
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 20px; /* Space between charts */
+    padding: 20px;
+    margin-top: 20px; /* Space below the greeting */
+}
+
+/* Style for each visual chart container */
+.visual {
+    flex: 1; /* Grow to fill space */
+    min-width: 300px; /* Minimum width */
+    max-width: 600px; /* Maximum width for larger screens */
+    margin: 0 10px; /* Horizontal margin */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Specific style for the pie chart to make it smaller */
+#visual.wagePieChartContainer {
+    max-width: 400px; /* Smaller max-width for the pie chart */
+}
+
+/* Ensure the canvas fills its container properly */
+.visual canvas {
+    width: 100% !important;
+    height: auto !important; /* Maintain aspect ratio */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .data-visuals {
+        flex-direction: column;
+    }
+
+    .visual {
+        max-width: 100%; /* Full width on smaller screens */
+        margin: 10px 0; /* Vertical margin only */
+    }
+    
+    /* Center the greeting text on smaller screens if it's not already centered */
+    .intro-section {
+        justify-content: center;
+    }
+}
+
+
+
+
+
