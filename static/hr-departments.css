@@ -1,0 +1,963 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 70%;
+    margin: auto;
+    overflow: hidden;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    color: #666;
+    text-transform: uppercase;
+    font-size: 0.85em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Added for box-sizing */
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #5cb85c;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+.flash-messages p {
+    color: green; /* or any color you prefer */
+    /* other styling as needed */
+}
+
+.login-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.login-link a {
+    color: #007bff; /* Example color */
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+.register-link, .login-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.register-link a, .login-link a {
+    color: #007bff; /* Example color */
+    text-decoration: none;
+}
+
+.register-link a:hover, .login-link a:hover {
+    text-decoration: underline;
+}
+
+.header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+    text-align: center;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+.edit-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 5px 15px;
+    margin-right: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    background-color: #0056b3;
+}
+
+.back-button {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    right: 0;
+    top: 0;
+    width: 500px; /* 0 width - change this with JavaScript */
+    height: 100%; /* Full height */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* Transition effect */
+    background-color: white; /* White background */
+    padding-top: 60px; /* Padding at the top */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    width: 100%; /* Width of the modal */
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center; /* Center content */
+}
+
+/* The Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #000;
+}
+
+.close:hover,
+.close:focus {
+    color: #db2828;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 100px; /* Adjust size as needed */
+    height: 100px;
+    border-radius: 50%; /* Circular avatar */
+    margin: 20px auto; /* Center the avatar */
+}
+
+.edit-form {
+    margin: 20px 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.save-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background-color: #45a049;
+}
+
+.avatar-flip-container {
+    perspective: 1000px; /* Depth effect for the flip */
+    width: 100px;
+    margin: auto;
+}
+
+.avatar-flipper {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    transition: 0.6s;
+    transform-style: preserve-3d;
+}
+
+.avatar-front, .avatar-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Hide the back face of the flipper */
+    border-radius: 50%; /* Circular shape */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-front {
+    /* Front styling (for the avatar image) */
+}
+
+.avatar-back {
+    background-color: #007bff; /* Change as per your color scheme */
+    color: white;
+    transform: rotateY(180deg); /* Flip the backside */
+}
+
+.avatar-flip-container:hover .avatar-flipper {
+    transform: rotateY(180deg); /* Flip on hover */
+}
+
+.avatar {
+    width: 100%;
+    height: auto; /* Maintain aspect ratio */
+}
+
+.overlay {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.4); /* Black background with opacity */
+    z-index: 1; /* Below the modal but above everything else */
+}
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    margin: 0 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.pagination span {
+    margin: 0 10px;
+}
+.search-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.search-form {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.search-input {
+    padding: 10px;
+    margin-right: 8px;
+    width: 300px; /* Or any width that fits your design */
+    font-size: 16px; /* Or any size that is legible */
+    border: 1px solid #ddd; /* Light grey border */
+    border-radius: 5px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: #007bff; /* Use a color that matches your theme */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.save-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background-color: #45a049;
+}
+
+.timeline {
+    border-left: 2px solid #ddd;
+    margin: 20px 0;
+    padding: 10px;
+    min-width: 300px !important;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 10px 20px;
+    border-bottom: 1px dashed #ddd;
+}
+
+.timeline-date {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.timeline-content {
+    padding-left: 20px;
+}
+
+
+.timeline {
+    list-style: none;
+    padding: 0;
+    position: relative;
+}
+
+.timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 40px;
+    width: 2px;
+    background: #e9ecef;
+}
+
+.timeline-item {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.timeline-item.completed .timeline-badge {
+    background: #28a745;
+}
+
+.timeline-badge {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 50%;
+    background: #6c757d;
+    position: absolute;
+    left: 28px;
+    text-align: center;
+    color: white;
+}
+
+.timeline-panel {
+    position: relative;
+    padding: 0 20px;
+    background: #ffffff;
+    border: 1px solid #d6d8db;
+    border-radius: 5px;
+    width: calc(100% - 65px);
+    left: 40px;
+}
+
+.timeline-heading h4 {
+    margin-top: 0;
+    color: inherit;
+}
+
+.timeline-title {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #5f6769;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+.timeline-body p {
+    margin-bottom: 0;
+}
+
+/* Timeline badge for the last item */
+.last-item .timeline-badge {
+    background: #28a745; /* Green background for the last item */
+}
+
+.department-modal{
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* High z-index to be on top */
+    left: 0;
+    top: 0;
+    min-width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    padding-top: 50px; /* Space from the top */
+}
+
+.department-modal-content, .department2-modal-content {
+    width: 50%; /* Half-page size */
+    min-width: 300px; /* Minimum width */
+    max-width: 600px; /* Maximum width */
+    margin: 5% auto !important; /* Centering */
+    overflow: hidden; /* Clear floats */
+    position: relative; /* For positioning the close button */
+    padding: 20px;
+    background: #FFF;
+    border-radius: 4px;
+}
+
+.department2-modal-content {
+    /*width: 50%; !* Half-page size *!*/
+    min-width: 300px; /* Minimum width */
+    max-width: 500px; /* Maximum width */
+    margin: 5% auto !important; /* Centering */
+    overflow: hidden; /* Clear floats */
+    position: relative; /* For positioning the close button */
+    padding: 20px;
+    background: #FFF;
+    border-radius: 4px;
+}
+
+.ajax-spinner-container {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 9999; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: hidden; /* Disable scroll when overlay is active */
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dot-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: #3498db;
+    border-radius: 50%;
+    margin: 0 5px;
+    /* Animation */
+    animation: dotPulse 1.2s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) { animation-delay: -0.48s; }
+.dot:nth-child(2) { animation-delay: -0.36s; }
+.dot:nth-child(3) { animation-delay: -0.24s; }
+.dot:nth-child(4) { animation-delay: -0.12s; }
+.dot:nth-child(5) { animation-delay: 0s; }
+
+@keyframes dotPulse {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+.manager-results {
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ccc;
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+}
+
+.manager-result-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.manager-result-item:hover {
+    background-color: #f0f0f0;
+}
+
+.load-more {
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.department-modal {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.department2-modal {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.department-modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    min-width: 70% !important;
+    display: flex; /* Add flex display */
+    justify-content: space-between; /* Distribute space */
+    align-items: flex-start; /* Align items to start */
+    max-height: 90vh; /* Limit the height of the modal */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+.timeline {
+    flex: 1; /* Timeline takes up 1 part of the flex space */
+    margin-right: 20px; /* Add some margin between the timeline and the form */
+    padding: 20px;
+    background-color: #f4f4f4; /* Slightly different background for visual separation */
+    border-right: 1px solid #ddd; /* Separate the timeline from the form */
+    overflow-y: auto; /* Enable scrolling within the timeline */
+    max-height: 600px; /* Adjust height as necessary */
+}
+
+#editDepartmentForm {
+    flex: 1; /* Form takes up 1 part of the flex space */
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Stack form elements vertically */
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+.close {
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    color: #aaa;
+}
+
+.close:hover {
+    color: #000;
+}
+
+button {
+    align-self: center; /* Align save button to the center of the form area */
+    padding: 10px 20px;
+    margin-top: 20px; /* Add some space at the top of the button */
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+/* Add responsive behavior */
+@media (max-width: 768px) {
+    .department-modal-content, .department2-modal-content {
+        flex-direction: column;
+    }
+
+    .timeline {
+        order: 2; /* Timeline comes after the form on small screens */
+        border-right: none;
+        margin-right: 0;
+        margin-top: 20px;
+    }
+
+    #editDepartmentForm {
+        order: 1; /* Form comes first on small screens */
+    }
+}
+
+/* Additional wrapper for form elements for vertical centering */
+.form-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    flex: 1; /* Take up the remaining space */
+}
+
+.department-modal-content{
+    /* ... existing styles ... */
+    display: flex; /* Set display to flex */
+    align-items: stretch; /* Make children of .department-modal-content fill the container */
+}
+
+.timeline {
+    /* ... existing styles ... */
+    height: auto; /* Remove max-height if you want the timeline to match the form's height */
+}
+
+#editDepartmentForm {
+    /* ... existing styles ... */
+    /* Remove any flex styles applied directly to #editDepartmentForm if they conflict with vertical centering */
+}
+
+/* Style adjustments for individual form elements if necessary */
+.form-group {
+    margin-bottom: 10px;
+}
+
+/* Close button positioning */
+.close {
+    /* ... existing styles ... */
+    position: absolute; /* Ensure the close button is positioned absolutely within the modal */
+}
+
+/* Button styles */
+button {
+    /* ... existing styles ... */
+    margin-top: auto; /* Push the button to the bottom of the .form-content-wrapper */
+}
+
+/* Apply responsive design as needed */
+@media (max-width: 768px) {
+    /* ... existing styles ... */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label, #manager-search {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#manager-search {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.manager-results {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: calc(100% - 660px);; /* Adjust according to the parent's padding */
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    top: 160px;
+}
+
+.employee-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.employee-item:last-child {
+    border-bottom: none;
+}
+
+.employee-item:hover {
+    background-color: #f8f8f8;
+}
+
+.load-more {
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    color: #007bff;
+}
+
+.load-more:hover {
+    text-decoration: underline;
+}
+
+.del-btn{
+    background-color: grey;
+}
+
+.del-btn:hover {
+    background-color: darkred;
+}
+
+
+.department2-modal button, .add-dept-form-btn {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #5cb85c; /* Green color */
+    color: white;
+    cursor: pointer;
+    width: 40%;
+    display: inline;
+}
+
+.department2-modal button:hover {
+    background-color: #4cae4c; /* Darker green */
+}
+
+/* Style for the cancel button */
+.department2-modal button:last-child {
+    background-color: #d9534f; /* Red color */
+}
+
+.department2-modal button:last-child:hover {
+    background-color: #c9302c; /* Darker red */
+}
+
+p {
+    margin: 20px 0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.department-modal2 {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 2; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.6); /* Black with opacity */
+}
+
+.department-modal2-content {
+    background-color: #fff;
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px;
+    border-radius: 8px;
+    width: 30%; /* Width */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+
+.department-modal2 h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-content-wrapper2 {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group2 {
+    margin-bottom: 15px;
+}
+
+.form-group2 label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group2 input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.add-dept-form-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff; /* Primary color */
+}
+
+.add-dept-form-btn:last-child {
+    background-color: #dc3545; /* Secondary color */
+}
+
+.add-dept-form-btn:hover {
+    opacity: 0.9;
+}
+
+.manager-results {
+    /*display: none;*/
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    max-width: 470px;
+}
+
+.manager-results .employee-item {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.manager-results .employee-item:hover {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    background-color: #f8f9fa;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e7e7e7;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 100px;
+}
+
+.navbar h1 {
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+#addDepartmentButton, .back-button {
+    padding: 8px 15px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    cursor: pointer;
+    max-width: 200px;
+    transition: background-color 0.3s ease;
+}
+
+#addDepartmentButton:hover, .back-button:hover {
+    background-color: #0056b3;
+}
+
+.back-button {
+    background-color: #6c757d;
+    order: -1; /* Move to the beginning of the flex container */
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}

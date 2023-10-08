@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Department Management</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hr-departments.css') }}">
+    <link rel="stylesheet" href="../static/hr-dashboard.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+
+    <div id="loadingIndicator" class="loader"></div>
+
+    <header class="header">
+        <h1>Departmental Administration</h1>
+    </header>
+
+    <div class="dimmedBackground" id="dimmedBg"></div>
+
+    <nav class="navigation">
+        <a href="{{ url_for('employee_list') }}">Employee List</a>
+        <a href="{{ url_for('department_list') }}">Department List</a>
+        <a href="" id="notificationLink">Alerts <span id="notificationCount"></span></a>
+        <a href="{{ url_for('sign_out') }}" id="logoutButton">Log Out</a>
+    </nav>
+
+    <div id="overlayScreen" class="screenOverlay"></div>
+    <div class="sidebar">
+        <a href="{{ url_for('main_dashboard') }}" class="navButton">Return to Main Dashboard</a>
+        <h1>Department Overview</h1>
+        <button id="newDeptBtn" onclick="displayAddDeptForm()">Create Department</button>
+    </div>
+    <div class="mainContainer">
+        <table class="styledTable" id="deptTable">
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Manager ID</th>
+                    <th>Manager</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% include 'partials/_department_table.html' %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ajaxStart(function() {
+            $("#loadingIndicator").show();
+        }).ajaxStop(function() {
+            $("#loadingIndicator").hide();
+        });
+
+        function editDepartment(deptId, deptTitle) {
+            $('#managerList').empty();
+            $.ajax({
+                url: '/get_dept_manager_history/' + deptId,
+                type: 'GET',
+                success: function(response) {
+                    const timeline = $('#managerHistory');
+                    timeline.empty();
+                    $('#deptNameInput').val(deptTitle);
+
+                    response.forEach(function(item, idx) {
+                        const isFinalItem = idx === response.length - 1;
+                        const historyItem = `
+                            <li class="${isFinalItem ? 'finalItem' : 'historyItem'}">
+                                <div class="badge">${idx + 1}</div>
+                                <div class="panel">
+                                    <div class="heading">
+                                        <h4>${item.name}</h4>
+                                        <p><small>${item.from_date} - ${item.to_date}</small></p>
+                                    </div>
+                                    <div class="body">
+                                        <p>ID: ${item.emp_id}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        `;
+                        timeline.append(historyItem);
+                    });
+
+                    $('#editDeptModal').show();
+                },
+                error: function(err) {
+                    console.error("Error fetching data:", err);
+                }
+            });
+
+            document.getElementById('deptIdInput').value = deptId;
+            document.getElementById('editDeptModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            $('#editDeptModal').hide();
+            document.getElementById('editDeptModal').style.display = 'none';
+        }
+
+        function updateDeptManager() {
+            let departmentName = document.getElementById('editDeptName').value;
+            let chosenManagerId = $('#selectedEmpNo').val(); // Retrieve the selected manager's employee number
+            const departmentId = $('#editDeptNo').val(); // The department identifier
+        
+            // Data preparation for backend submission
+            const updateData = {
+                manager_id: chosenManagerId,
+                department_id: departmentId,
+                start_date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+                end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0] // Date one year from now
+            };
+        
+            // AJAX POST request to backend
+            $.ajax({
+                url: '/modify_dept_manager',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(updateData),
+                success: function(responseData) {
+                    alert('Manager assignment successful');
+                    // Additional success behavior
+                    $('#managerSearchInput').val('');
+                    $('#selectedEmpNo').val('');
+                    // Optionally, close the editing panel
+                    $('#editDepartmentPanel').hide();
+                    // Refresh department table
+                    updateDepartmentTable();
+                },
+                error: function(xhr, status, errMsg) {
+                    alert('Failed to assign manager: ' + errMsg);
+                    // Additional error handling
+                }
+            });
+        
+            closeEditDeptPanel();
+        }
+        
+        function updateDepartmentTable() {
+            // AJAX request to retrieve updated department data
+            $.ajax({
+                url: '/fetch_updated_departments',
+                type: 'GET',
+                success: function(updatedData) {
+                    // Assuming updatedData contains the new HTML for the department table
+                    $('#department-table tbody').html(updatedData);
+                },
+                error: function(fetchError) {
+                    console.error("Unable to fetch department data:", fetchError);
+                }
+            });
+        }
+        
+        let currentPage = 1;
+        let currentQuery = '';
+        const itemsPerPage = 10;
+        
+        function initiateManagerSearch(searchTerm) {
+            if (searchTerm.length < 3) {
+                return; // Require at least 3 characters for search
+            }
+            currentQuery = searchTerm;
+            currentPage = 1; // Start from the first page for a new search
+            $('#manager-results').empty(); // Clear current results
+            retrieveSearchResults(searchTerm, currentPage);
+        }
+        
+        function retrieveSearchResults(searchTerm, pageNumber) {
+            $.ajax({
+                url: '/employee_search_api',
+                data: { query: searchTerm, page: pageNumber, per_page: itemsPerPage },
+                success: function(responseData) {
+                    console.log(responseData);
+                    responseData.employees.forEach(emp => {
+                        const employeeEntry = `<div class="employee-item" data-emp-id="${emp.id}">${emp.first_name} ${emp.last_name}</div>`;
+                        $('#manager-results').append(employeeEntry);
+                        $('#newManagerResults').append(employeeEntry);
+                    });
+                    if (responseData.has_more) {
+                        const loadMoreButton = `<div class="load-more" onclick="loadAdditionalResults()">See More...</div>`;
+                        $('#manager-results').append(loadMoreButton);
+                        $('#newManagerResults').append(loadMoreButton);
+                    }
+                },
+                error: function(searchError) {
+                    console.error("Search error:", searchError);
+                }
+            });
+        }
+        
+        $(document).on('click', '.employee-item', function() {
+            const managerId = $(this).data('empId');
+            const managerFullName = $(this).text(); // Extract the name displayed
+        
+            $('#selectedEmpNo').val(managerId); // Update the hidden input
+            $('#managerSearchInput').val(managerFullName); // Show the name in the search field
+        
+            $('#manager-results').empty(); // Clear the results
+            $('#manager-results').hide(); // Optionally, hide the dropdown
+        });
+
+        function extendSearchResults() {
+            $('.more-results-btn').remove(); // Remove the "Load More Results" button
+            currentSearchPage++; // Increment the current page index
+            executeManagerSearch(searchQuery, currentSearchPage);
+        }
+        
+        $('#managerSearchResults').on('scroll', function() {
+            if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                extendSearchResults();
+            }
+        });
+        
+        $('#alternateManagerResults').on('scroll', function() {
+            if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                extendSearchResults();
+            }
+        });
+        
+        function displayNewDepartmentForm() {
+            document.getElementById('newDeptModal').style.display = 'block';
+            document.getElementById('newDeptModal').scrollIntoView({ behavior: 'smooth' });
+        
+            // Clear form fields
+            document.getElementById('inputNewDeptName').value = '';
+            document.getElementById('inputNewManager').value = '';
+            document.getElementById('hiddenNewManagerId').value = '';
+            document.getElementById('alternateManagerResults').innerHTML = '';
+        }
+        
+        function hideNewDepartmentForm() {
+            document.getElementById('newDeptModal').style.display = 'none';
+            document.getElementById('createDeptBtn').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function executeNewManagerSearch(term) {
+            if (term.length < 3) {
+                return; // Minimum character length for search
+            }
+            searchQuery = term;
+            currentSearchPage = 1;
+            $('#alternateManagerResults').empty();
+            executeManagerSearch(term, currentSearchPage);
+        }
+        
+        function processNewDeptSubmission() {
+            let newDeptName = document.getElementById('inputNewDeptName').value;
+            let selectedManagerId = document.getElementById('hiddenNewManagerId').value;
+        
+            $.ajax({
+                url: '/create_new_department',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ deptName: newDeptName, managerId: selectedManagerId }),
+                success: function(resp) {
+                    alert('New department created successfully');
+                    hideNewDepartmentForm();
+                    updateDepartmentsList();
+                },
+                error: function(err) {
+                    alert('Failed to create department');
+                }
+            });
+        }
+        
+        $(document).on('click', '#alternateManagerResults .manager-item', function() {
+            let managerId = $(this).data('manager-id');
+            let managerName = $(this).text();
+            $('#inputNewManager').val(managerName);
+            $('#hiddenNewManagerId').val(managerId);
+            $('#alternateManagerResults').empty();
+        });
+        
+        let deptToRemove = null;
+        
+        function promptDeptDeletion(deptId) {
+            deptToRemove = deptId;
+            document.getElementById('deptDeletionModal').style.display = 'block';
+        }
+        
+        function closeDeletionModal() {
+            document.getElementById('deptDeletionModal').style.display = 'none';
+        }
+        
+        function executeDeptDeletion() {
+            if (!deptToRemove) return;
+        
+            $.ajax({
+                url: '/remove_department/' + deptToRemove,
+                type: 'DELETE',
+                success: function(resp) {
+                    closeDeletionModal();
+                    alert('Department removed successfully');
+                    location.reload(); // or refresh the department list dynamically
+                },
+                error: function(err) {
+                    alert('Failed to delete department');
+                }
+            });
+        }
+
+        
+
+    </script>
+
+    <div id="deptEditModal" class="dept-modal">
+        <div class="dept-modal-inner">
+            <span class="modal-close-btn" onclick="dismissEditDeptModal()">&times;</span>
+            <ul id="deptManagerHistory" class="history-timeline"></ul>
+            <div class="modal-form-container">
+                <form id="deptEditForm">
+                    <div class="input-group">
+                        <label for="deptNameEdit">Department Name:</label>
+                        <input type="text" id="deptNameEdit">
+                    </div>
+                    <label for="deptManagerSearch">Manager:</label>
+                    <input type="text" id="deptManagerSearch" placeholder="Search for manager..." oninput="initiateManagerSearch(this.value)">
+                    <div id="managerSearchResults" class="search-results"></div>
+                    <input type="hidden" id="hiddenDeptId">
+                    <input type="hidden" id="hiddenManagerId">
+                    <button type="button" class="btn-save-changes" onclick="executeDeptUpdate()">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="newDeptModal" class="new-dept-modal" style="display: none;">
+        <div class="new-dept-modal-content">
+            <span class="modal-close-btn" onclick="dismissNewDeptModal()">&times;</span>
+            <h2>Create New Department</h2>
+            <div class="modal-form-container">
+                <form id="createDeptForm">
+                    <div class="input-group">
+                        <label for="inputNewDeptName">Department Name:</label>
+                        <input type="text" id="inputNewDeptName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="newDeptManagerSearch">Manager:</label>
+                        <input type="text" id="newDeptManagerSearch" placeholder="Search for manager..." oninput="searchForNewManager(this.value)">
+                        <div id="alternateManagerResults" class="search-results"></div>
+                    </div>
+                    <input type="hidden" id="hiddenNewManagerId">
+                    <button class="btn-add-dept" type="button" onclick="processNewDeptSubmission()">Add</button>
+                    <button class="btn-cancel" type="button" onclick="dismissNewDeptModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="deptDeletionConfirmModal" class="confirm-modal" style="display:none;">
+        <div class="confirm-modal-content">
+            <span class="modal-close-btn" onclick="closeDeletionModal()">&times;</span>
+            <p>Confirm deletion of this department?</p>
+            <button id="cancelDeletion" onclick="closeDeletionModal()">Cancel</button>
+            <button onclick="executeDeptDeletion()">Confirm Delete</button>
+        </div>
+    </div>
+    
+
+</body>
+</html>

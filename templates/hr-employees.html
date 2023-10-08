@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Staff Directory</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hr-employees.css') }}">
+    <link rel="stylesheet" href="../static/hr-dashboard.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <div id="initialLoader" class="loader"></div>
+
+    <header class="header-panel">
+        <h1>Employee Management System</h1>
+    </header>
+
+    <div class="cover-background" id="bgCover"></div>
+
+    <nav class="navigation-bar">
+        <a href="{{ url_for('staff_list') }}">Staff</a>
+        <a href="{{ url_for('division_list') }}">Divisions</a>
+        <a href="#" id="alertNotifications">Alerts <span id="notifBadge"></span></a>
+        <a href="{{ url_for('exit_session') }}" id="logoutLink">Log Out</a>
+    </nav>
+
+    <div id="overlayScreen" class="screen-overlay"></div>
+
+    <div class="navigation-panel">
+        <a href="{{ url_for('main_view') }}" class="nav-back-btn">Return to Main</a>
+        <h1>Staff</h1>
+        <div class="toggle-managers">
+            <label class="toggle-switch">
+                <input type="checkbox" id="managerFilter" onchange="filterStaff()">
+                <span class="toggle-slider"></span>
+            </label>
+            <span id="managerFilterText">Show Only Managers</span>
+        </div>
+        <button id="newStaffBtn" onclick="openStaffAddModal()">Register New Staff</button>
+    </div>
+
+    <div class="search-area">
+        <form method="GET" action="{{ url_for('staff_list') }}" class="search-bar">
+            <input type="text" name="searchQuery" placeholder="Find staff members" class="search-field" oninput="executeSearch(this.value)">
+            <button type="submit" class="search-btn">Find</button>
+        </form>
+    </div>
+
+    <div class="content-container">
+        <table id="staffTable">
+            <thead>
+                <tr>
+                    <th><a href="{{ url_for('staff_list', sort='employee_id', order='asc') }}">ID</a></th>
+                    <th><a href="{{ url_for('staff_list', sort='name', order='asc') }}">Name</a></th>
+                    <th>Surname</th>
+                    <th>
+                        <a href="{{ url_for('staff_list', sort='division', order='asc') }}">
+                            Division
+                            <!-- Sorting arrows as needed -->
+                        </a>
+                    </th>
+                    <th>Date Joined</th>
+                    <th>Modify</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% include 'partials/_staff_table_content.html' %}
+            </tbody>
+        </table>
+        <div class="pagination-section">
+            {% if pagination.has_prev %}
+            <a href="javascript:void(0);" onclick="fetchPageData('{{ pagination.prev_num }}', '{{ searchQuery }}', '{{ managerFilterState }}')">Previous</a>
+            {% endif %}
+            {% if pagination.has_next %}
+            <a href="javascript:void(0);" onclick="fetchPageData('{{ pagination.next_num }}', '{{ searchQuery }}', '{{ managerFilterState }}')">Next</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        $(document).ajaxStart(function() {
+            $("#loadingSpinner").show();
+        }).ajaxStop(function() {
+            $("#loadingSpinner").hide();
+        });
+        
+        function fetchEmployeeData(page, query, managerOnly) {
+            $("#loadingSpinner").show(); // Display the loading indicator
+        
+            $.ajax({
+                url: '/employee_list',
+                type: 'GET',
+                data: {
+                    page: page,
+                    search: query,
+                    managerOnly: managerOnly
+                },
+                success: function(data) {
+                    $('#employeeDataTable tbody').html(data);
+                },
+                error: function(err) {
+                    console.error("AJAX request error:", err);
+                },
+                complete: function() {
+                    $("#loadingSpinner").hide(); // Hide the loading indicator
+                }
+            });
+        }
+        
+        function managerFilterToggle() {
+            const filterManager = $('#managerFilter').is(':checked');
+            $('a.pagination-link').each(function() {
+                let link = $(this).attr('href');
+                if (link) {
+                    link = modifyQueryString(link, 'managerFilter', filterManager);
+                    $(this).attr('href', link);
+                }
+            });
+        
+            $.ajax({
+                url: '/employee_list',
+                type: 'GET',
+                data: { managerFilter: filterManager },
+                success: function(data) {
+                    $('#employeeDataTable tbody').html(data);
+                },
+                error: function(err) {
+                    console.error("Manager filter error:", err);
+                }
+            });
+        }
+        
+        function modifyQueryString(url, key, value) {
+            let regex = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+            let separator = url.indexOf('?') !== -1 ? "&" : "?";
+            if (url.match(regex)) {
+                return url.replace(regex, '$1' + key + "=" + value + '$2');
+            } else {
+                return url + separator + key + "=" + value;
+            }
+        }
+        
+        $(document).ready(function() {
+            let managerOnlySetting = extractQueryParameter('managerFilter');
+            $('#managerFilter').prop('checked', managerOnlySetting === 'true');
+        });
+        
+        function extractQueryParameter(param) {
+            param = param.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            let regex = new RegExp("[\\?&]" + param + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        function navigatePage(navDirection) {
+            // JavaScript for pagination navigation
+            // Typically involves AJAX calls for next/previous data
+        }
+        
+        var sampleEmployeeData = {
+            12345: { givenName: "John", familyName: "Doe", /* other fields */ },
+            // ... additional sample employee data ...
+        };
+        
+        function triggerEditEmployeeModal(employeeId) {
+            console.log("Activating edit modal for employee:", employeeId);
+            $.ajax({
+                url: '/fetch_employee_info/' + employeeId,
+                type: 'GET',
+                success: function(info) {
+                    $('#inputEmpNo').val(info.emp_no);
+                    $('#inputFirstName').val(info.first_name);
+                    $('#inputLastName').val(info.last_name);
+                    $('#inputTitle').val(info.title);
+                    $('#inputSalary').val(info.salary);
+                    $('#selectDept').val(info.dept_name);
+        
+                    $.ajax({
+                        url: '/list_departments',
+                        type: 'GET',
+                        success: function(depts) {
+                            var deptSelect = $('#selectDept');
+                            deptSelect.empty();
+                            depts.forEach(function(dept) {
+                                deptSelect.append($('<option>', {
+                                    value: dept.dept_no,
+                                    text: dept.dept_name,
+                                    selected: dept.dept_no === info.dept_no
+                                }));
+                            });
+                        },
+                        error: function(err) {
+                            console.error("Error loading departments:", err);
+                        }
+                    });
+        
+                    $('#employeeEditModal').show();
+                },
+                error: function(err) {
+                    console.error("Error retrieving employee info:", err);
+                }
+            });
+            document.getElementById("employeeEditModal").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+        
+        function closeEditModal() {
+            document.getElementById("employeeEditModal").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+        
+        function updateEmployeeDetails() {
+            event.preventDefault();
+            var employeeNumber = $('#inputEmpNo').val();
+            var updatedInfo = {
+                first_name: $('#inputFirstName').val(),
+                last_name: $('#inputLastName').val(),
+                dept_no: $('#selectDept').val(),
+                title: $('#inputTitle').val(),
+                salary: $('#inputSalary').val(),
+                start_date: new Date().toISOString().split('T')[0],
+                end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0]
+            };
+        
+            $.ajax({
+                url: '/modify_employee/' + employeeNumber,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedInfo),
+                success: function(resp) {
+                    $('#employeeEditModal').hide();
+                    window.location.reload();
+                },
+                error: function(err) {
+                    console.error("Error updating employee:", err);
+                }
+            });
+        }
+        
+        function executeEmployeeSearch(searchTerm) {
+            if (searchTerm.length < 3) {
+                return;
+            }
+        
+            $.ajax({
+                url: "{{ url_for('employee_directory') }}",
+                type: "GET",
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                data: { search: searchTerm },
+                success: function(filteredData) {
+                    $('#employeeDataTable tbody').html(filteredData);
+                },
+                error: function(err) {
+                    console.error("Search error:", err);
+                }
+            });
+        }
+
+        function showNewEmployeeForm() {
+            document.getElementById("newEmployeeFormModal").style.display = "block";
+            document.getElementById("mainOverlay").style.display = "block";
+            $.ajax({
+                url: '/list_all_departments',
+                type: 'GET',
+                success: function(deptList) {
+                    var departmentSelect = $('#selectDepartment');
+                    departmentSelect.empty();
+                    deptList.forEach(function(dept) {
+                        departmentSelect.append($('<option>', {
+                            value: dept.department_id,
+                            text: dept.department_name
+                        }));
+                    });
+                },
+                error: function(err) {
+                    console.error("Error retrieving department list:", err);
+                }
+            });
+        }
+        
+        function hideNewEmployeeForm() {
+            document.getElementById("newEmployeeFormModal").style.display = "none";
+            document.getElementById("mainOverlay").style.display = "none";
+        }
+        
+        $(document).ready(function() {
+            $('.submit-new-employee').click(function(evt) {
+                registerNewEmployee(evt);
+            });
+        });
+        
+        function registerNewEmployee(evt) {
+            console.log(evt);
+            evt.preventDefault();
+            var employeeDetails = {
+                first_name: $('#inputFirstName').val(),
+                last_name: $('#inputLastName').val(),
+                job_title: $('#inputTitle').val(),
+                wage: $('#inputSalary').val(),
+                department_id: $('#selectDepartment').val()
+            };
+        
+            $.ajax({
+                url: '/register_employee',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(employeeDetails),
+                success: function(resp) {
+                    hideNewEmployeeForm();
+                    alert("Employee added successfully");
+                    window.location.reload();
+                },
+                error: function(err) {
+                    console.error("Error during employee registration:", err);
+                }
+            });
+        }
+        
+        document.getElementById('newEmployeeBtn').onclick = showNewEmployeeForm;
+        
+        // Optional: Code to close the modal on outside click
+        // window.onclick = function(event) {
+        //     if (event.target.id === "newEmployeeFormModal") {
+        //         hideNewEmployeeForm();
+        //     }
+        // }        
+    </script>
+
+    <div id="employeeEditModal" class="custom-modal">
+        <div class="modal-inner-content">
+            <span class="modal-close-btn" onclick="dismissEditModal()">&times;</span>
+            <div class="modal-body-content">
+                <div class="profile-flip-container">
+                    <div class="profile-flipper">
+                        <div class="profile-front">
+                            <img src="https://static.thenounproject.com/png/5034901-200.png" alt="Employee Photo" class="profile-picture">
+                        </div>
+                        <div class="profile-back">
+                            ID: <span id="displayEmployeeId"></span>
+                        </div>
+                    </div>
+                </div>
+    
+                <h2>Modify Employee Details</h2>
+    
+                <form id="updateEmployeeForm" class="form-edit-employee">
+                    <input type="hidden" id="inputEmployeeId">
+                    <div class="form-input-group">
+                        <label for="inputFirstName">First Name:</label>
+                        <input type="text" id="inputFirstName">
+                    </div>
+                    <div class="form-input-group">
+                        <label for="inputLastName">Last Name:</label>
+                        <input type="text" id="inputLastName">
+                    </div>
+                    <div class="form-input-group">
+                        <label for="inputJobTitle">Job Title:</label>
+                        <input type="text" id="inputJobTitle">
+                    </div>
+                    <div class="form-input-group">
+                        <label for="inputWage">Wage:</label>
+                        <input type="number" id="inputWage">
+                    </div>
+                    <div class="form-input-group">
+                        <label for="selectDepartment">Department:</label>
+                        <select id="selectDepartment"></select>
+                    </div>
+                    <button type="submit" class="btn-save" onclick="executeEmployeeUpdate()">Apply Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="spinnerOverlay" class="loading-spinner-overlay">
+        <div class="circle-spinner">
+            <div class="spinner-dot"></div>
+            <div class="spinner-dot"></div>
+            <div class="spinner-dot"></div>
+            <div class="spinner-dot"></div>
+            <div class="spinner-dot"></div>
+        </div>
+    </div>
+    
+    <div id="newEmployeeModal" class="custom-modal">
+        <div class="modal-inner-content">
+            <span class="modal-close-btn" onclick="dismissNewEmployeeModal()">&times;</span>
+            <h2>Register New Employee</h2>
+            <form id="registerEmployeeForm" class="form-new-employee">
+                <div class="form-input-group">
+                    <label for="newEmployeeFirstName">First Name:</label>
+                    <input type="text" id="newEmployeeFirstName">
+                </div>
+                <div class="form-input-group">
+                    <label for="newEmployeeLastName">Last Name:</label>
+                    <input type="text" id="newEmployeeLastName">
+                </div>
+                <div class="form-input-group">
+                    <label for="newEmployeeTitle">Title:</label>
+                    <input type="text" id="newEmployeeTitle">
+                </div>
+                <div class="form-input-group">
+                    <label for="newEmployeeSalary">Salary:</label>
+                    <input type="number" id="newEmployeeSalary">
+                </div>
+                <div class="form-input-group">
+                    <label for="newEmployeeDept">Department:</label>
+                    <select id="newEmployeeDept"></select>
+                </div>
+                <button type="button" class="btn-add" onclick="addEmployee()">Add</button>
+            </form>
+        </div>
+    </div>    
+
+</body>
+</html>
