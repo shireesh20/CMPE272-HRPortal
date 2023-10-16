@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Manager Dashboard</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard-mgr-style.css') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-inverse">
+      <a class="navbar-brand" href="/dashboard_mgr">HR Portal</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('employees_mgr', dept_no=dept_no, mgr_no=mgr_no) }}">Employees</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <!-- Use ms-auto to push items to the right -->
+          <li class="nav-item">
+            <button class="btn btn-link" id="profileBtn" onclick="redirectToProfile()">My Profile</button>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}" id="logout-btn">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <div class="row">
+        <!-- Left side with jumbotron -->
+        <div class="col-md-6">
+          <input type="hidden" id="currMgrNo" value="{{mgr_no}}" />
+          <input type="hidden" id="currDeptNo" value="{{dept_no}}" />
+          <div class="jumbotron">
+            <h2>Welcome, {{ user_full_name }}</h2>
+            <h4><strong>{{ managed_department }}</strong> department management dashboard.</h4>
+          </div>
+        </div>
+        <!-- Right side with form -->
+        <div class="col-md-6">
+          <div class="task-assignment-container mt-3">
+            <h3>Assign a Ticket To Employee</h3>
+            <form id="customTaskAssignmentForm">
+              <div class="mb-3">
+                <label for="customTaskName" class="form-label">Ticket Name:</label>
+                <input type="text" class="form-control" id="customTaskName" name="customTaskName" />
+              </div>
+              <div class="mb-3">
+                <label for="customTaskDescription" class="form-label">Ticket Details:</label>
+                <textarea class="form-control" id="customTaskDescription" name="customTaskDescription"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="customDeadline" class="form-label">Deadline:</label>
+                <input type="date" class="form-control" id="customDeadline" name="customDeadline" />
+              </div>
+              <div class="mb-3">
+                <label for="customAssignee" class="form-label">Assign to:</label>
+                <select class="form-select" id="customAssignee" name="customAssignee"></select>
+              </div>
+              <button type="submit" class="btn btn-primary">Assign Ticket</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      function redirectToProfile() {
+        // Get the manager's ID from the hidden input
+        var managerId = document.getElementById("currMgrNo").value;
+
+        // Redirect to the profile page
+        window.location.href = "/myProfile/" + managerId;
+      }
+
+      function fetchEmployeesByDepartment(departmentNumber) {
+        const apiUrl = `/get_employees?dept_no=${departmentNumber}`;
+
+        fetch(apiUrl).then(handleResponse).then(updateAssigneeOptions).catch(handleError);
+      }
+
+      function handleResponse(response) {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      }
+
+      function updateAssigneeOptions(employees) {
+        console.log(employees);
+
+        const assigneeSelect = document.getElementById("customAssignee");
+        assigneeSelect.innerHTML = ""; // Clear existing options
+
+        employees.forEach((employee) => {
+          let option = new Option(`${employee.name}`, employee.id);
+          assigneeSelect.appendChild(option);
+        });
+      }
+
+      function handleError(error) {
+        console.error("Error:", error);
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const taskList = document.getElementById("customTaskAssignmentForm");
+
+        taskList.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const taskForm = new FormData(taskList);
+          const taskData = {
+            name: taskForm.get("taskName"),
+            description: taskForm.get("taskDescription"),
+            assignee: taskForm.get("assignee"),
+            managerNumber: document.getElementById("currMgrNo").value,
+            deadline: taskForm.get("deadline"),
+            employeeNumber: document.getElementById("assignee").value,
+          };
+          function addTaskToEmployee(taskData) {
+            const apiUrl = "/add_task";
+
+            const requestOptions = {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(taskData),
+            };
+
+            fetch(apiUrl, requestOptions).then(handleResponse).then(handleTaskAssignment).catch(handleError);
+          }
+
+          function handleResponse(response) {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          }
+
+          function handleTaskAssignment(data) {
+            toggleTaskForm();
+            alert("Assigned task to employee");
+          }
+
+          function handleError(error) {
+            console.error("Error:", error);
+          }
+        });
+      });
+
+      const curr_dept = document.getElementById("currDeptNo").value;
+      fetchEmployeesByDepartment(curr_dept);
+    </script>
+  </body>
+</html>

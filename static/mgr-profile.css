@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: black;
+}
+.equal-size {
+    width: 150px; /* Set the width as needed */
+    height: 40px; /* Set the height as needed */
+  }
+.navbar a,
+.navbar button {
+    color: white;
+}
+
+.container {
+    padding: 20px;
+}
+
+#profileForm {
+    width: 70%;
+    margin: auto;
+    background-color: #d3d3d3;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 50px; /* Adjust as needed */
+}
+
+#profileForm label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#profileForm input[type="text"],
+#profileForm input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+#profileForm .form-check {
+    margin-bottom: 10px;
+}
+
+#profileForm button {
+    background-color: greenyellow;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#profileForm button:hover {
+    background-color: greenyellow;
+}
+/* Remove anchor tag default styles */
+.btn-danger a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Style for the anchor tag within btn-danger */
+.btn-danger a:hover {
+    color: inherit;
+    text-decoration: none;
+}
