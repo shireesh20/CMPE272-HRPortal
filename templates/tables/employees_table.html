@@ -1,0 +1,12 @@
+<!-- employees_table_body.html -->
+{% for emp in employees %}
+<tr>
+    <td>{{ emp.emp_no }}</td>
+    <td>{{ emp.first_name }}</td>
+    <td>{{ emp.last_name }}</td>
+    <td>{{ emp.dept_name }}</td>
+    <td>
+        <button type="button" class="btn-edit" onclick="editEmployeeDetails('{{ emp.emp_no }}')">Edit</button>
+    </td>
+</tr>
+{% endfor %}
