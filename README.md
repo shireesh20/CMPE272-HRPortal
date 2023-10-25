@@ -1,6 +1,6 @@
 # CMPE272-HRPortal
 
-# 272-hrm
+# Do the DB setup from the below link
 Get data from <a href="https://github.com/datacharmer/test_db"> here... </a> and injest into ur local db </br>
 <br/>
 Create a table hr_user with below cmd:
@@ -34,12 +34,12 @@ To run the application: <code> Python3 main.py </code>
 
 # High Level Design
 
-![High-Level-Design](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/systemdesign.png>)
+![High-Level-Design](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/systemdesign.png)
 
 
 # Database Design
 
-![Database Design](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/dbdesign.png>)
+![Database Design](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/dbdesign.png)
 
 
 
@@ -47,11 +47,11 @@ To run the application: <code> Python3 main.py </code>
 
 # UML Diagram
 
-![UML_diagram](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/uml.png>)
+![UML_diagram](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/uml.png)
 
 # Sequence Diagram
 
-![sequence-diagram](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/sequence.png>)
+![sequence-diagram](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/sequence.png)
 
 # application home
 
