@@ -1,0 +1,10 @@
+{% for dept in departments %}
+<tr>
+    <td>{{ dept.dept_name }}</td>
+    <td>{{ dept.first_name }} {{ dept.last_name }}</td>
+    <td>
+        <button onclick="openDepartmentEditModal('{{ dept.dept_no }}', '{{ dept.dept_name }}')">Edit</button>
+        <button class="delete-department" onclick="promptDepartmentDeletion('{{ dept.dept_no }}')">Delete</button>
+    </td>
+</tr>
+{% endfor %}
