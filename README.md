@@ -34,12 +34,12 @@ To run the application: <code> Python3 main.py </code>
 
 # High Level Design
 
-![High-Level-Design](https://github.com/shireesh20/CMPE272-HRPortal/static/assets/systemdesign.png>)
+![High-Level-Design](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/systemdesign.png>)
 
 
 # Database Design
 
-![Database Design](https://github.com/shireesh20/CMPE272-HRPortal/static/assets/dbdesign.png>)
+![Database Design](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/dbdesign.png>)
 
 
 
@@ -47,15 +47,18 @@ To run the application: <code> Python3 main.py </code>
 
 # UML Diagram
 
-![UML_diagram](https://github.com/shiva-vardhineedi/272-hrm/assets/uml.png>)
+![UML_diagram](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/uml.png>)
 
 # Sequence Diagram
 
-![sequence-diagram](https://github.com/shiva-vardhineedi/272-hrm/assets/sequence.png>)
+![sequence-diagram](https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets/sequence.png>)
 
 # application home
 
-<img width="1440" alt="home-page" src="https://github.com/shireesh20/CMPE272-HRPortal/static/assets2/home.png">
+<img width="1440" alt="home-page" src="https://github.com/shireesh20/CMPE272-HRPortal/blob/main/static/assets2/home.png">
+
+
+
 
 
 
