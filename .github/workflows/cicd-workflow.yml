@@ -22,3 +22,14 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: docker push shireesh20/cmpe272-hrportal:latest
+
+  deploy:
+    needs: build-event
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull shireesh20/cmpe272-hrportal:latest
+      - name: Delete old container
+        run: docker rm -f HrPortal
+      - name: Run docker container
+        run: docker run -d -p 5000:5000 --name HrPortal shireesh20/cmpe272-hrportal:latest
