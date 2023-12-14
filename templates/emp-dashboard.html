@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard-style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="navigation">
+        <a href="{{ url_for('user_history_loader', user_id=user.user_id) }}">History</a>
+        <button id="profileButton" onclick="displayProfileModal()">My Profile</button>
+        <a href="{{ url_for('logout') }}" id="logoutButton">Logout</a>
+    </div>
+
+    <!-- <div class="header">
+        <h1>User Dashboard</h1>
+    </div> -->
+
+    
+    <div class="dashboard-wrapper">
+        <div class="user-info-container">
+            <input type="hidden" id="currentUser" value="{{user.user_id}}">
+                <h2>Hello, {{ user.first_name }}</h2>
+                <p>Welcome to your user dashboard.</p>
+                {% if user.department_name %}
+                <p>You are associated with the department: <strong>{{ user.department_name }}</strong></p>
+                {% else %}
+                <p>You are not currently associated with any department.</p>
+                {% endif %}
+            
+        </div>
+        <div class="profile-container">
+            <div class="task-container">
+                <h3>Tasks</h3>
+                <div class="task-list">
+                    <!-- Task cards will be dynamically added here -->
+                </div>
+                <div class="no-tasks">
+                    <p class="no-tasks-message">Yay, no pending items... 📝</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    
+    
+
+    <!-- Profile Modal -->
+    <div id="userProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProfileModal()">&times;</span>
+            <h3>Edit Profile</h3>
+            <!-- Profile Form -->
+            <form id="profileForm"  data-action-url="{{ url_for('edit_user_profile') }}">
+                <!-- Form fields here -->
+                <!-- ... -->
+                <div class="form-group">
+                    <label>Gender</label>
+                    <input type="radio" id="gender_m" name="gender" value="M" {% if user.gender == 'M' %}checked{% endif %}>
+                    <label for="gender_m">Male</label>
+                    <input type="radio" id="gender_f" name="gender" value="F" {% if user.gender == 'F' %}checked{% endif %}>
+                    <label for="gender_f">Female</label>
+                </div>
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="birth_date">Date Of Birth</label>
+                    <input type="date" id="birth_date" name="birth_date" value="{{ user.birth_date }}">
+                </div>
+                
+                <button type="button" onclick="closeProfileModal()">Cancel</button>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/user-dash-script.js') }}"></script>
+</body>
+</html>
